@@ -2,51 +2,47 @@
 
   Aqui temos um exemplo de representação dos valores do grid
   
-  | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 
-  | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 
-  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 
-  | 0 | 0 | 2 | 0 | 0 | 0 | 0 | 0 | 
-  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 
-  | 0 | 0 | 2 | 1 | 0 | 0 | 0 | 0 | 
-  | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 
-  | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 
+  | 0 | 0 | 0 | 0 | 2 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 0 | 0 | 0 | 0 |
+  | 0 | 0 | 0 | 0 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 0 | 0 | 1 |
 
   Consideramos o jogo da cobrinha nesse exemplo, nesse caso temos:
-    1 - Representa o corpo
-    2 - Representa a cabeça e as comidinhas que a cobrinha pega para crescer
-
-  No grid todos os valores >0 são acesos os LEDs
+    1 - Representa o carrinho
+    2 - Perde uma vida se bater
+    3 - Perde uma vida se não bater
 
 */
 
-int grid[8][8];
+
+// 2 grids 16x2
+// O primeiro indice representa qual grid está sendo usado
+// grid 0 é o LCD da esquerda
+int grid[2][2][16];
+
+// As vidas para cada LCD
+int vidas[2];
+
+// Teclas
+int start;
+int e, d; // Esquerda, direita
 
 
-void escreveLED(){
-  for(int i=0;i<8;i++)
-    for(int j=0;j<8;j++)
-      if(grid[i][j])
-        // liga led
-      else
-        // desliga led
+void escreveLCD(int gridNum){
+  for(int i=0;i<2;i++)
+    for(int j=0;j<16;j++){
+      grid[gridNum][i][j]
+    }
 }
 
-void preencheGrid(int gridAux[8][8]){
-  for(int i=0;i<8;i++)
-    for(int j=0;j<8;j++)
-      grid[i][j] = gridAux[i][j];
+void preencheGrid(int gridAux[2][16], int gridNum){
+  for(int i=0;i<2;i++)
+    for(int j=0;j<16;j++)
+      grid[gridNum][i][j] = gridAux[i][j];
 }
 
 void desenhaMenu(){
-  int gridAux[8][8] = {
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 1, 1, 0, 1, 0, 0},
-    {0, 0, 1, 0, 0, 0, 0, 0},
-    {0, 1, 1, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0}    
+  int gridAux[2][16] = {
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}
   };
   preencheGrid(gridAux);
 
@@ -54,19 +50,70 @@ void desenhaMenu(){
 }
 
 void lerTeclas(){
+  // Nao limpa a telca de start
   // TODO
 }
 
-void cobrinha(){
+void carrinhosIndividual(){
+  start = 0;
+  e     = 0;
+  d     = 0;
+  
+  
+  while(1){
+    lerTeclas();
+    if(start) return;
+    
+    if(e){
+      if(grid[0][0][15]){ // se o carrinho se encontra na primeira linha passa para a segunda
+        grid[0][0][15] = 0;
+        grid[0][1][15] = 1;
+      }
+      else{
+        grid[0][0][15] = 1;
+        grid[0][1][15] = 0;
+      }
+    }
+    
+    if(d){
+      if(grid[1][0][15]){ // se o carrinho se encontra na primeira linha passa para a segunda
+        grid[1][0][15] = 0;
+        grid[1][1][15] = 1;
+      }
+      else{
+        grid[1][0][15] = 1;
+        grid[1][1][15] = 0;
+      }
+    }
+    
+    //TODO pontuacao
+    
+  }
+}
+
+void carrinhosDupla(){
+  start = 0;
+  e     = 0;
+  d     = 0;
+  
   // TODO
+  while(1){
+    lerTeclas();
+    if(start) return;
+    
+  }
 }
 
 
 void setup() {
-  for(int i=0;i<8;i++)
-    for(int j=0;j<8;j++)
-      grid[i][j] = 0;
+  for(int k=0;k<2;k++)
+    for(int i=0;i<2;i++)
+      for(int j=0;j<16;j++)
+        grid[k][i][j] = 0;
 
+  vidas[0] = 3;
+  vidas[1] = 3;
+  
   desenhaMenu();
 }
 
@@ -74,5 +121,8 @@ void loop() {
   lerTeclas();
 
   if(start)
-    cobrinha();
+    if(e)
+      carrinhosIndividual();
+    if(d)
+      carrinhosDupla();
 }
