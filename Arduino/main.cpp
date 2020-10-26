@@ -26,11 +26,12 @@ int start;
 int e, d; // Esquerda, direita
 
 
-void escreveLCD(int gridNum){
-  for(int i=0;i<2;i++)
-    for(int j=0;j<16;j++){
-      grid[gridNum][i][j]
-    }
+void atualizaLCD(){
+  for(int k=0;k<2;k++)
+    for(int i=0;i<2;i++)
+      for(int j=0;j<16;j++){
+        grid[k][i][j]
+      }
 }
 
 void preencheGrid(int gridAux[2][16], int gridNum){
@@ -64,6 +65,7 @@ void carrinhosIndividual(){
     lerTeclas();
     if(start) return;
     
+    
     if(e){
       if(grid[0][0][15]){ // se o carrinho se encontra na primeira linha passa para a segunda
         grid[0][0][15] = 0;
@@ -86,8 +88,38 @@ void carrinhosIndividual(){
       }
     }
     
-    //TODO pontuacao
     
+    // LCD da esquerda
+    if(grid[0][0][15]){
+      if(grid[0][0][14]==2) vidas[0]  -= 1;
+      if(grid[0][1][14]==3) vidas[0]  -= 1;
+      
+      if(grid[0][0][14]==3) pontuacao += 1;
+    }
+    else{
+      if(grid[0][0][14]==3) vidas[0]  -= 1;
+      if(grid[0][1][14]==2) vidas[0]  -= 1;
+      
+      if(grid[0][1][14]==3) pontuacao += 1;
+    }
+    
+    // LCD da direita
+    if(grid[1][0][15]){
+      if(grid[1][0][14]==2) vidas[1]  -= 1;
+      if(grid[1][1][14]==3) vidas[1]  -= 1;
+      
+      if(grid[1][0][14]==3) pontuacao += 1;
+    }
+    else{
+      if(grid[1][0][14]==3) vidas[1]  -= 1;
+      if(grid[1][1][14]==2) vidas[1]  -= 1;
+      
+      if(grid[1][1][14]==3) pontuacao += 1;
+    }
+    
+    atualizaLCD();
+    atualizaVidas();
+    atualizaPontuacao();
   }
 }
 
