@@ -83,10 +83,11 @@ void desenhaMenu(){
   };
   preencheGrid(gridAux);
 
+  atualizaLCD();
   atualizaVidas();
 }
 
-void carrinhosIndividual(){
+void carrinhos(){
   start = 0;
   e     = 0;
   d     = 0;
@@ -172,18 +173,6 @@ void carrinhosIndividual(){
   }
 }
 
-void carrinhosDupla(){
-  start = 0;
-  e     = 0;
-  d     = 0;
-  
-  // TODO
-  while(1){
-    lerTeclas();
-    if(start) return;
-    
-  }
-}
 
 // Portas utilizadas no arduino
 #define VIDA01 11
@@ -210,23 +199,26 @@ void setup() {
   
   randomSeed(analogRead(0));
   
-  for(int k=0;k<2;k++)
-    for(int i=0;i<2;i++)
-      for(int j=0;j<16;j++)
-        grid[k][i][j] = 0;
-
-  vidas[0] = 3;
-  vidas[1] = 3;
-  
-  desenhaMenu();
+  limparValores = 1;
 }
 
 void loop() {
+  if(limparValores){
+    limparValores = 0;
+    
+    desenhaMenu();
+  }
   lerTeclas();
 
   if(start)
-    if(e)
-      carrinhosIndividual();
-    if(d)
-      carrinhosDupla();
+    if(e){
+      carrinhos();
+      
+      limparValores = 1;
+    }
+    if(d){
+      carrinhos();
+      
+      limparValores = 1;
+    }
 }
