@@ -35,6 +35,16 @@ void atualizaLCD(){
       }
 }
 
+void perderIndividual(){
+  // Mensagem para quando perder no individual 
+}
+
+void ganhadorDupla(){
+  // Mensagem para quando ganhar no modo de dupla
+  
+  // para saber o ganhador ver variavel vida que tiver >0 ou pode dar empata
+}
+
 void atualizaVidas(){
   if(vidas[0] == 3){
     digitalWrite(VIDA01, HIGH);
@@ -88,7 +98,7 @@ void desenhaMenu(){
   atualizaVidas();
 }
 
-void carrinhos(){
+void carrinhos(int dupla){
   start = 0;
   e     = 0;
   d     = 0;
@@ -169,8 +179,13 @@ void carrinhos(){
     atualizaLCD();
     atualizaVidas();
     
-    if(vidas[1]<=0 && vidas[0]<=0)
-      break;
+    if(!dupla){
+      if(vidas[1]<=0 && vidas[0]<=0)
+        break;
+    } else{
+      if(vidas[1]<=0 || vidas[0]<=0)
+        break;
+    }
   }
 }
 
@@ -211,15 +226,18 @@ void loop() {
   }
   lerTeclas();
 
-  if(start)
+  if(start){
     if(e){
-      carrinhos();
+      carrinhos(0);
       
       limparValores = 1;
+      perderIndividual();
     }
     if(d){
-      carrinhos();
+      carrinhos(1);
       
       limparValores = 1;
+      ganhadorDupla();
     }
+  }
 }
