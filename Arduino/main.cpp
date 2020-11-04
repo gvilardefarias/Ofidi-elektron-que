@@ -81,7 +81,8 @@ void desenhaMenu(){
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}
   };
-  preencheGrid(gridAux);
+  preencheGrid(gridAux, 0);
+  preencheGrid(gridAux, 1);
 
   atualizaLCD();
   atualizaVidas();
