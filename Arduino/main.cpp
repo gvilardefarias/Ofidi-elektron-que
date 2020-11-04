@@ -5,7 +5,7 @@
   | 0 | 0 | 0 | 0 | 2 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 0 | 0 | 0 | 0 |
   | 0 | 0 | 0 | 0 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 0 | 0 | 1 |
 
-  Consideramos o jogo da cobrinha nesse exemplo, nesse caso temos:
+  Consideramos o jogo do carrinho nesse exemplo, nesse caso temos:
     1 - Representa o carrinho
     2 - Perde uma vida se bater
     3 - Perde uma vida se não bater
@@ -74,6 +74,8 @@ void carrinhosIndividual(){
     lerTeclas();
     if(start) return;
     
+    delay(150);
+    
     
     if(e && vidas[0]>0){
       if(grid[0][0][15]){ // se o carrinho se encontra na primeira linha passa para a segunda
@@ -103,14 +105,10 @@ void carrinhosIndividual(){
       if(grid[0][0][15]){
         if(grid[0][0][14]==2) vidas[0]  -= 1;
         if(grid[0][1][14]==3) vidas[0]  -= 1;
-
-        if(grid[0][0][14]==3) pontuacao += 1;
       }
       else{
         if(grid[0][0][14]==3) vidas[0]  -= 1;
         if(grid[0][1][14]==2) vidas[0]  -= 1;
-
-        if(grid[0][1][14]==3) pontuacao += 1;
       }
     }
     
@@ -119,20 +117,33 @@ void carrinhosIndividual(){
       if(grid[1][0][15]){
         if(grid[1][0][14]==2) vidas[1]  -= 1;
         if(grid[1][1][14]==3) vidas[1]  -= 1;
-
-        if(grid[1][0][14]==3) pontuacao += 1;
       }
       else{
         if(grid[1][0][14]==3) vidas[1]  -= 1;
         if(grid[1][1][14]==2) vidas[1]  -= 1;
-
-        if(grid[1][1][14]==3) pontuacao += 1;
       }
     }
     
+    
+    for(int k=0;k<2;k++)
+      for(int i=0;i<2;i++)
+        for(int j=0;j<15;j++){
+          grid[k][i][j+1] = grid[k][i][j];
+        }
+     
+    grid[0][0][0] = random(4);
+    grid[0][1][0] = random(4);
+    grid[1][0][0] = random(4);
+    grid[1][1][0] = random(4);
+    
+    if(grid[0][0][0]==1)  grid[0][0][0] = 0;
+    if(grid[0][1][0]==1)  grid[0][1][0] = 0;
+    if(grid[1][0][0]==1)  grid[1][0][0] = 0;
+    if(grid[1][1][0]==1)  grid[1][1][0] = 0;
+    
+    
     atualizaLCD();
     atualizaVidas();
-    atualizaPontuacao();
     
     if(vidas[1]<=0 && vidas[0]<=0)
       break;
@@ -154,6 +165,8 @@ void carrinhosDupla(){
 
 
 void setup() {
+  randomSeed(analogRead(0));
+  
   for(int k=0;k<2;k++)
     for(int i=0;i<2;i++)
       for(int j=0;j<16;j++)
