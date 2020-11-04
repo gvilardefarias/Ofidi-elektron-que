@@ -36,14 +36,36 @@ void atualizaLCD(){
 }
 
 void atualizaVidas(){
-  // TODO hardware
-}
-
-void atualizaPontuacao(){
+  if(vidas[0] == 3){
+    digitalWrite(VIDA01, HIGH);
+    digitalWrite(VIDA02, HIGH);
+    digitalWrite(VIDA03, HIGH);
+  }
+  else if(vidas[0] == 2)
+    digitalWrite(VIDA03, LOW);
+  else if(vidas[0] == 1)
+    digitalWrite(VIDA02, LOW);
+  else if(vidas[0] == 0)
+    digitalWrite(VIDA01, LOW);
+  
+  if(vidas[1] == 3){
+    digitalWrite(VIDA11, HIGH);
+    digitalWrite(VIDA12, HIGH);
+    digitalWrite(VIDA13, HIGH);
+  } 
+  else if(vidas[1] == 2)
+    digitalWrite(VIDA13, LOW);
+  else if(vidas[1] == 1)
+    digitalWrite(VIDA12, LOW);
+  else if(vidas[1] == 0)
+    digitalWrite(VIDA11, LOW);
   // TODO hardware
 }
 
 void lerTeclas(){
+  e = !digitalRead(E);
+  d = !digitalRead(D);
+  start = !digitalRead(START);
   // Nao limpa a tecla de start
   // TODO hardware
 }
@@ -61,7 +83,7 @@ void desenhaMenu(){
   };
   preencheGrid(gridAux);
 
-  escreveLED();
+  atualizaVidas();
 }
 
 void carrinhosIndividual(){
@@ -163,8 +185,29 @@ void carrinhosDupla(){
   }
 }
 
+// Portas utilizadas no arduino
+#define VIDA01 11
+#define VIDA02 10
+#define VIDA03 9
+#define VIDA11 8
+#define VIDA12 7
+#define VIDA13 6
+#define START 4
+#define E 5
+#define D A5
 
 void setup() {
+  pinMode(VIDA01, OUTPUT);
+  pinMode(VIDA01, OUTPUT);
+  pinMode(VIDA02, OUTPUT);
+  pinMode(VIDA03, OUTPUT);
+  pinMode(VIDA11, OUTPUT);
+  pinMode(VIDA12, OUTPUT);
+  pinMode(VIDA13, OUTPUT);
+  pinMode(START, INPUT_PULLUP);
+  pinMode(E, INPUT_PULLUP);
+  pinMode(D, INPUT_PULLUP);
+  
   randomSeed(analogRead(0));
   
   for(int k=0;k<2;k++)
