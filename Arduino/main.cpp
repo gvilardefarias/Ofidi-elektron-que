@@ -272,6 +272,16 @@ void setup() {
   pinMode(E, INPUT_PULLUP);
   pinMode(D, INPUT_PULLUP);
   
+  LCD0.createChar(0, customChar0);
+  LCD0.createChar(1, customChar1);
+  LCD0.createChar(2, customChar2);
+  LCD0.createChar(3, customChar3);
+	
+  LCD1.createChar(0, customChar0);
+  LCD1.createChar(1, customChar1);
+  LCD1.createChar(2, customChar2);
+  LCD1.createChar(3, customChar3);
+	
   LCD0.begin(16, 2);
   LCD1.begin(16, 2);
   
