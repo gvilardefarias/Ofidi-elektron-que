@@ -8,9 +8,8 @@
 #define VIDA12 7
 #define VIDA13 6
 
-#define START 4
 #define E 5
-#define D A5
+#define D 4
 
 #define EN 13
 #define RS_0 12
@@ -86,6 +85,9 @@ int vidas[2];
 bool start, ativa, limparValores;
 bool e, d; // Esquerda, direita
 
+// Controle
+unsigned long tempo;
+
 
 void atualizaLCD(){
     for(int i=0;i<2;i++){
@@ -154,13 +156,8 @@ void atualizaVidas(){
 }
 
 void lerTeclas(){
-  e = digitalRead(E);
-  d = digitalRead(D);
-  ativa = digitalRead(START);
-  
-  //Serial.println(e);
-  if(ativa)
-    start = 1;
+  e = !digitalRead(E);
+  d = !digitalRead(D);
 }
 
 void preencheGrid(int gridAux[2][16], int gridNum){
@@ -188,7 +185,7 @@ void carrinhos(int dupla){
   
   
   while(1){
-    delay(1000);
+    delay(1);
     lerTeclas();
     //Serial.println(start);
     if(start) return;    
@@ -217,57 +214,61 @@ void carrinhos(int dupla){
     }
     
     
-    // LCD da esquerda
-    if(vidas[0]>0){
-      if(grid[0][0][15]){
-        if(grid[0][0][14]==2) vidas[0]  -= 1;
-        if(grid[0][1][14]==3) vidas[0]  -= 1;
-      }
-      else{
-        if(grid[0][0][14]==3) vidas[0]  -= 1;
-        if(grid[0][1][14]==2) vidas[0]  -= 1;
-      }
-    }
-    
-    // LCD da direita
-    if(vidas[1]>0){
-      if(grid[1][0][15]){
-        if(grid[1][0][14]==2) vidas[1]  -= 1;
-        if(grid[1][1][14]==3) vidas[1]  -= 1;
-      }
-      else{
-        if(grid[1][0][14]==3) vidas[1]  -= 1;
-        if(grid[1][1][14]==2) vidas[1]  -= 1;
-      }
-    }
-    
-    
-    for(int k=0;k<2;k++)
-      for(int i=0;i<2;i++)
-        for(int j=14;j>0;j--){
-          grid[k][i][j] = grid[k][i][j-1];
+    if((millis()-tempo)>1000){
+      // LCD da esquerda
+      if(vidas[0]>0){
+        if(grid[0][0][15]){
+          if(grid[0][0][14]==2) vidas[0]  -= 1;
+          if(grid[0][1][14]==3) vidas[0]  -= 1;
         }
-     
-    grid[0][0][0] = random(0, 4);
-    grid[0][1][0] = random(0, 4);
-    grid[1][0][0] = random(0, 4);
-    grid[1][1][0] = random(0, 4);
-    
-    if(grid[0][0][0]==1)  grid[0][0][0] = 0;
-    if(grid[0][1][0]==1)  grid[0][1][0] = 0;
-    if(grid[1][0][0]==1)  grid[1][0][0] = 0;
-    if(grid[1][1][0]==1)  grid[1][1][0] = 0;
-    
-    if(grid[0][0][0]==2 && grid[0][1][0]==2) grid[0][random(0, 1)][0] = 3;
-    if(grid[0][0][0]==3 && grid[0][1][0]==3) grid[0][random(0, 1)][0] = 2;
-    
-    if(grid[1][0][0]==2 && grid[1][1][0]==2) grid[1][random(0, 1)][0] = 3;
-    if(grid[1][0][0]==3 && grid[1][1][0]==3) grid[1][random(0, 1)][0] = 2;
-    
+        else{
+          if(grid[0][0][14]==3) vidas[0]  -= 1;
+          if(grid[0][1][14]==2) vidas[0]  -= 1;
+        }
+      }
+
+      // LCD da direita
+      if(vidas[1]>0){
+        if(grid[1][0][15]){
+          if(grid[1][0][14]==2) vidas[1]  -= 1;
+          if(grid[1][1][14]==3) vidas[1]  -= 1;
+        }
+        else{
+          if(grid[1][0][14]==3) vidas[1]  -= 1;
+          if(grid[1][1][14]==2) vidas[1]  -= 1;
+        }
+      }
+      
+      atualizaVidas();
+
+
+      // Deslocamento para esquerda e adicao de novos obstaculos
+      for(int k=0;k<2;k++)
+        for(int i=0;i<2;i++)
+          for(int j=14;j>0;j--){
+            grid[k][i][j] = grid[k][i][j-1];
+          }
+
+      grid[0][0][0] = random(0, 4);
+      grid[0][1][0] = random(0, 4);
+      grid[1][0][0] = random(0, 4);
+      grid[1][1][0] = random(0, 4);
+
+      // Nao se pode adicionar um novo carrinho
+      if(grid[0][0][0]==1)  grid[0][0][0] = 0;
+      if(grid[0][1][0]==1)  grid[0][1][0] = 0;
+      if(grid[1][0][0]==1)  grid[1][0][0] = 0;
+      if(grid[1][1][0]==1)  grid[1][1][0] = 0;
+      
+      // Nem ter dois obstaculos do mesmo tipo na mesma linha
+      if(grid[0][0][0]==2 && grid[0][1][0]==2) grid[0][random(0, 1)][0] = 3;
+      if(grid[0][0][0]==3 && grid[0][1][0]==3) grid[0][random(0, 1)][0] = 2;
+
+      if(grid[1][0][0]==2 && grid[1][1][0]==2) grid[1][random(0, 1)][0] = 3;
+      if(grid[1][0][0]==3 && grid[1][1][0]==3) grid[1][random(0, 1)][0] = 2;
+    }
     
     atualizaLCD();
-    atualizaVidas();
-    delay(100);
     
     if(!dupla){
       if(vidas[1]<=0 && vidas[0]<=0)
@@ -290,7 +291,6 @@ void setup() {
   pinMode(VIDA12, OUTPUT);
   pinMode(VIDA13, OUTPUT);
   
-  pinMode(START, INPUT_PULLUP);
   pinMode(E, INPUT_PULLUP);
   pinMode(D, INPUT_PULLUP);
   
@@ -307,7 +307,7 @@ void setup() {
   LCD1.createChar(2, customChar2);
   LCD1.createChar(3, customChar3);
   
-  randomSeed(analogRead(0));
+  randomSeed(analogRead(5));
   
   vidas[0] = 3;
   vidas[1] = 3;
@@ -323,7 +323,7 @@ void loop() {
   }
   lerTeclas();
 	carrinhos(0);
-  if(start){
+  //Ajeita o treco do menu
     if(e){
       carrinhos(0);
       
@@ -336,5 +336,4 @@ void loop() {
       limparValores = 1;
       ganhadorDupla();
     }
-  }
 }
