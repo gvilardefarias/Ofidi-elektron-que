@@ -39,8 +39,8 @@
 #define D6_1 A3
 #define D7_1 A4
 
-LiquidCrystal LCD0(RS, EN, D4, D5, D6, D7); 
-LiquidCrystal LCD1(RS, EN, D4, D5, D6, D7); 
+LiquidCrystal LCD0(RS, EN, D4_0, D5_0, D6_0, D7_0); 
+LiquidCrystal LCD1(RS, EN, D4_1, D5_1, D6_1, D7_1); 
 
 // 2 grids 16x2
 // O primeiro indice representa qual grid está sendo usado
