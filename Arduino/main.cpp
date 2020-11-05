@@ -1,17 +1,3 @@
-/*
-
-  Aqui temos um exemplo de representação dos valores do grid
-  
-  | 0 | 0 | 0 | 0 | 2 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 0 | 0 | 0 | 0 |
-  | 0 | 0 | 0 | 0 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 0 | 0 | 1 |
-
-  Consideramos o jogo do carrinho nesse exemplo, nesse caso temos:
-    1 - Representa o carrinho
-    2 - Perde uma vida se bater
-    3 - Perde uma vida se não bater
-
-*/
-
 #include <LiquidCrystal.h>
 
 // Portas utilizadas no arduino
@@ -27,7 +13,8 @@
 #define D A5
 
 #define EN 13
-#define RS 12
+#define RS_0 12
+#define RS_1 A0
 
 #define D4_0 0
 #define D5_0 1
@@ -39,8 +26,8 @@
 #define D6_1 A3
 #define D7_1 A4
 
-LiquidCrystal LCD0(RS, EN, D4_0, D5_0, D6_0, D7_0); 
-LiquidCrystal LCD1(RS, EN, D4_1, D5_1, D6_1, D7_1); 
+LiquidCrystal LCD0(RS_0, EN, D4_0, D5_0, D6_0, D7_0); 
+LiquidCrystal LCD1(RS_1, EN, D4_1, D5_1, D6_1, D7_1); 
 
 // 2 grids 16x2
 // O primeiro indice representa qual grid está sendo usado
@@ -103,10 +90,11 @@ bool e, d; // Esquerda, direita
 void atualizaLCD(){
     for(int i=0;i<2;i++){
       for(int j=0;j<16;j++){
-	LCD0.setCursor(j,i);
-	LCD0.write((byte) grid[0][i][j]);
-	LCD1.setCursor(j,i);    
+        LCD1.setCursor(j,i);    
         LCD1.write((byte) grid[1][i][j]);
+        
+        LCD0.setCursor(j,i);
+        LCD0.write((byte) grid[0][i][j]);
       }
     }
 }
@@ -127,30 +115,50 @@ void atualizaVidas(){
     digitalWrite(VIDA02, HIGH);
     digitalWrite(VIDA03, HIGH);
   }
-  else if(vidas[0] == 2)
+  else if(vidas[0] == 2){
+    digitalWrite(VIDA01, HIGH);
+    digitalWrite(VIDA02, HIGH);
     digitalWrite(VIDA03, LOW);
-  else if(vidas[0] == 1)
+  }
+  else if(vidas[0] == 1){
+    digitalWrite(VIDA01, HIGH);
     digitalWrite(VIDA02, LOW);
-  else if(vidas[0] == 0)
+    digitalWrite(VIDA03, LOW);
+  }
+  else if(vidas[0] == 0){
     digitalWrite(VIDA01, LOW);
+    digitalWrite(VIDA02, LOW);
+    digitalWrite(VIDA03, LOW);
+  }
   
   if(vidas[1] == 3){
     digitalWrite(VIDA11, HIGH);
     digitalWrite(VIDA12, HIGH);
     digitalWrite(VIDA13, HIGH);
   } 
-  else if(vidas[1] == 2)
+  else if(vidas[1] == 2){
+    digitalWrite(VIDA11, HIGH);
+    digitalWrite(VIDA12, HIGH);
     digitalWrite(VIDA13, LOW);
-  else if(vidas[1] == 1)
+  }
+  else if(vidas[1] == 1){
+    digitalWrite(VIDA11, HIGH);
     digitalWrite(VIDA12, LOW);
-  else if(vidas[1] == 0)
+    digitalWrite(VIDA13, LOW);
+  }
+  else if(vidas[1] == 0){
     digitalWrite(VIDA11, LOW);
+    digitalWrite(VIDA12, LOW);
+    digitalWrite(VIDA13, LOW);
+  }
 }
 
 void lerTeclas(){
-  e = !digitalRead(E);
-  d = !digitalRead(D);
-  ativa = !digitalRead(START);
+  e = digitalRead(E);
+  d = digitalRead(D);
+  ativa = digitalRead(START);
+  
+  //Serial.println(e);
   if(ativa)
     start = 1;
 }
@@ -180,10 +188,10 @@ void carrinhos(int dupla){
   
   
   while(1){
+    delay(1000);
     lerTeclas();
-    if(start) return;
-    
-    delay(150);
+    //Serial.println(start);
+    if(start) return;    
     
     
     if(e && vidas[0]>0){
@@ -236,23 +244,30 @@ void carrinhos(int dupla){
     
     for(int k=0;k<2;k++)
       for(int i=0;i<2;i++)
-        for(int j=0;j<15;j++){
-          grid[k][i][j+1] = grid[k][i][j];
+        for(int j=14;j>0;j--){
+          grid[k][i][j] = grid[k][i][j-1];
         }
      
-    grid[0][0][0] = random(4);
-    grid[0][1][0] = random(4);
-    grid[1][0][0] = random(4);
-    grid[1][1][0] = random(4);
+    grid[0][0][0] = random(0, 4);
+    grid[0][1][0] = random(0, 4);
+    grid[1][0][0] = random(0, 4);
+    grid[1][1][0] = random(0, 4);
     
     if(grid[0][0][0]==1)  grid[0][0][0] = 0;
     if(grid[0][1][0]==1)  grid[0][1][0] = 0;
     if(grid[1][0][0]==1)  grid[1][0][0] = 0;
     if(grid[1][1][0]==1)  grid[1][1][0] = 0;
     
+    if(grid[0][0][0]==2 && grid[0][1][0]==2) grid[0][random(0, 1)][0] = 3;
+    if(grid[0][0][0]==3 && grid[0][1][0]==3) grid[0][random(0, 1)][0] = 2;
+    
+    if(grid[1][0][0]==2 && grid[1][1][0]==2) grid[1][random(0, 1)][0] = 3;
+    if(grid[1][0][0]==3 && grid[1][1][0]==3) grid[1][random(0, 1)][0] = 2;
+    
     
     atualizaLCD();
     atualizaVidas();
+    delay(100);
     
     if(!dupla){
       if(vidas[1]<=0 && vidas[0]<=0)
@@ -266,6 +281,8 @@ void carrinhos(int dupla){
 
 
 void setup() {
+  //Serial.begin(9600);
+  
   pinMode(VIDA01, OUTPUT);
   pinMode(VIDA02, OUTPUT);
   pinMode(VIDA03, OUTPUT);
@@ -292,6 +309,9 @@ void setup() {
   
   randomSeed(analogRead(0));
   
+  vidas[0] = 3;
+  vidas[1] = 3;
+  
   limparValores = 1;
 }
 
@@ -302,7 +322,7 @@ void loop() {
     desenhaMenu();
   }
   lerTeclas();
-
+	carrinhos(0);
   if(start){
     if(e){
       carrinhos(0);
