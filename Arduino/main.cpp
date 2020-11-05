@@ -12,6 +12,32 @@
 
 */
 
+#include <LiquidCrystal.h>
+
+// Portas utilizadas no arduino
+#define VIDA01 11
+#define VIDA02 10
+#define VIDA03 9
+#define VIDA11 8
+#define VIDA12 7
+#define VIDA13 6
+
+#define START 4
+#define E 5
+#define D A5
+
+#define EN 13
+#define RS 12
+
+#define D4_0 0
+#define D5_0 1
+#define D6_0 2
+#define D7_0 3
+
+#define D4_1 A1
+#define D5_1 A2
+#define D6_1 A3
+#define D7_1 A4
 
 // 2 grids 16x2
 // O primeiro indice representa qual grid está sendo usado
@@ -22,8 +48,8 @@ int grid[2][2][16];
 int vidas[2];
 
 // Teclas
-int start;
-int e, d; // Esquerda, direita
+bool start, ativa;
+bool e, d; // Esquerda, direita
 
 
 void atualizaLCD(){
@@ -42,7 +68,7 @@ void perderIndividual(){
 void ganhadorDupla(){
   // Mensagem para quando ganhar no modo de dupla
   
-  // para saber o ganhador ver variavel vida que tiver >0 ou pode dar empata
+  // para saber o ganhador ver variavel vida que tiver >0 ou pode dar empate
 }
 
 void atualizaVidas(){
@@ -69,15 +95,14 @@ void atualizaVidas(){
     digitalWrite(VIDA12, LOW);
   else if(vidas[1] == 0)
     digitalWrite(VIDA11, LOW);
-  // TODO hardware
 }
 
 void lerTeclas(){
   e = !digitalRead(E);
   d = !digitalRead(D);
-  start = !digitalRead(START);
-  // Nao limpa a tecla de start
-  // TODO hardware
+  ativa = !digitalRead(START);
+  if(ativa)
+    start = 1;
 }
 
 void preencheGrid(int gridAux[2][16], int gridNum){
@@ -190,28 +215,20 @@ void carrinhos(int dupla){
 }
 
 
-// Portas utilizadas no arduino
-#define VIDA01 11
-#define VIDA02 10
-#define VIDA03 9
-#define VIDA11 8
-#define VIDA12 7
-#define VIDA13 6
-#define START 4
-#define E 5
-#define D A5
-
 void setup() {
-  pinMode(VIDA01, OUTPUT);
   pinMode(VIDA01, OUTPUT);
   pinMode(VIDA02, OUTPUT);
   pinMode(VIDA03, OUTPUT);
   pinMode(VIDA11, OUTPUT);
   pinMode(VIDA12, OUTPUT);
   pinMode(VIDA13, OUTPUT);
+  
   pinMode(START, INPUT_PULLUP);
   pinMode(E, INPUT_PULLUP);
   pinMode(D, INPUT_PULLUP);
+  
+  LCD0.begin(16, 2);
+  LCD1.begin(16, 2);
   
   randomSeed(analogRead(0));
   
