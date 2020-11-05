@@ -96,18 +96,20 @@ byte customChar3[8] = {
 int vidas[2];
 
 // Teclas
-bool start, ativa;
+bool start, ativa, limparValores;
 bool e, d; // Esquerda, direita
 
 
 void atualizaLCD(){
-    for(int i=0;i<2;i++)
+    for(int i=0;i<2;i++){
       for(int j=0;j<16;j++){
 	LCD0.setCursor(j,i);
 	LCD0.write((byte) grid[0][i][j]);
 	LCD1.setCursor(j,i);    
         LCD1.write((byte) grid[1][i][j]);
       }
+    }
+}
 
 void perderIndividual(){
   // Mensagem para quando perder no individual 
