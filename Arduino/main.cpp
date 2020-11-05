@@ -44,6 +44,51 @@
 // grid 0 é o LCD da esquerda
 int grid[2][2][16];
 
+//Definicao dos caracteres utilizados no LCD
+byte customChar0[8] = {
+	0b11111,
+	0b00000,
+	0b00000,
+	0b00000,
+	0b00000,
+	0b00000,
+	0b00000,
+	0b11111
+};  // espaco vazio
+
+byte customChar1[8] = {
+	0b11111,
+	0b00000,
+	0b01010,
+	0b11111,
+	0b11111,
+	0b01010,
+	0b00000,
+	0b11111
+};  // Carrinho
+
+byte customChar2[8] = {
+	0b11111,
+	0b00000,
+	0b01110,
+	0b00100,
+	0b00100,
+	0b01110,
+	0b00000,
+	0b11111
+};  // Barreira
+
+byte customChar3[8] = {
+	0b11111,
+	0b00000,
+	0b11111,
+	0b10001,
+	0b10001,
+	0b11111,
+	0b00000,
+	0b11111
+};  // Circulo
+
 // As vidas para cada LCD
 int vidas[2];
 
