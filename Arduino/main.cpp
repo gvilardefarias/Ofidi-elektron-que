@@ -39,6 +39,9 @@
 #define D6_1 A3
 #define D7_1 A4
 
+LiquidCrystal LCD0(RS, EN, D4, D5, D6, D7); 
+LiquidCrystal LCD1(RS, EN, D4, D5, D6, D7); 
+
 // 2 grids 16x2
 // O primeiro indice representa qual grid está sendo usado
 // grid 0 é o LCD da esquerda
@@ -98,13 +101,13 @@ bool e, d; // Esquerda, direita
 
 
 void atualizaLCD(){
-  for(int k=0;k<2;k++)
     for(int i=0;i<2;i++)
       for(int j=0;j<16;j++){
-        // TODO hardware
-        grid[k][i][j]
+	LCD0.setCursor(j,i);
+	LCD0.write((byte) grid[0][i][j]);
+	LCD1.setCursor(j,i);    
+        LCD1.write((byte) grid[1][i][j]);
       }
-}
 
 void perderIndividual(){
   // Mensagem para quando perder no individual 
@@ -272,6 +275,9 @@ void setup() {
   pinMode(E, INPUT_PULLUP);
   pinMode(D, INPUT_PULLUP);
   
+  LCD0.begin(16, 2);
+  LCD1.begin(16, 2);
+	
   LCD0.createChar(0, customChar0);
   LCD0.createChar(1, customChar1);
   LCD0.createChar(2, customChar2);
@@ -281,9 +287,6 @@ void setup() {
   LCD1.createChar(1, customChar1);
   LCD1.createChar(2, customChar2);
   LCD1.createChar(3, customChar3);
-	
-  LCD0.begin(16, 2);
-  LCD1.begin(16, 2);
   
   randomSeed(analogRead(0));
   
