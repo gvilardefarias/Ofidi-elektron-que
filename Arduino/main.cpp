@@ -185,7 +185,6 @@ void carrinhos(int dupla){
   
   
   while(1){
-    delay(1);
     lerTeclas();
     //Serial.println(start);
     if(start) return;    
@@ -215,6 +214,8 @@ void carrinhos(int dupla){
     
     
     if((millis()-tempo)>1000){
+      tempo = millis();
+      
       // LCD da esquerda
       if(vidas[0]>0){
         if(grid[0][0][15]){
@@ -225,6 +226,23 @@ void carrinhos(int dupla){
           if(grid[0][0][14]==3) vidas[0]  -= 1;
           if(grid[0][1][14]==2) vidas[0]  -= 1;
         }
+	      
+	      
+	// Deslocamento para esquerda e adicao de novos obstaculos
+	for(int i=0;i<2;i++)
+          for(int j=14;j>0;j--)
+            grid[0][i][j] = grid[k][i][j-1];
+	      
+	grid[0][0][0] = random(0, 4);
+      	grid[0][1][0] = random(0, 4);
+	      
+        // Nao se pode adicionar um novo carrinho
+	if(grid[0][0][0]==1)  grid[0][0][0] = 0;
+      	if(grid[0][1][0]==1)  grid[0][1][0] = 0;
+	      
+	// Nem ter dois obstaculos do mesmo tipo na mesma linha
+      	if(grid[0][0][0]==2 && grid[0][1][0]==2) grid[0][random(0, 1)][0] = 3;
+      	if(grid[0][0][0]==3 && grid[0][1][0]==3) grid[0][random(0, 1)][0] = 2;
       }
 
       // LCD da direita
@@ -237,35 +255,19 @@ void carrinhos(int dupla){
           if(grid[1][0][14]==3) vidas[1]  -= 1;
           if(grid[1][1][14]==2) vidas[1]  -= 1;
         }
+	  	
+	      
+	grid[1][0][0] = random(0, 4);
+      	grid[1][1][0] = random(0, 4);  
+      
+      	if(grid[1][0][0]==1)  grid[1][0][0] = 0;
+      	if(grid[1][1][0]==1)  grid[1][1][0] = 0;  
+
+      	if(grid[1][0][0]==2 && grid[1][1][0]==2) grid[1][random(0, 1)][0] = 3;
+      	if(grid[1][0][0]==3 && grid[1][1][0]==3) grid[1][random(0, 1)][0] = 2;
       }
       
-      atualizaVidas();
-
-
-      // Deslocamento para esquerda e adicao de novos obstaculos
-      for(int k=0;k<2;k++)
-        for(int i=0;i<2;i++)
-          for(int j=14;j>0;j--){
-            grid[k][i][j] = grid[k][i][j-1];
-          }
-
-      grid[0][0][0] = random(0, 4);
-      grid[0][1][0] = random(0, 4);
-      grid[1][0][0] = random(0, 4);
-      grid[1][1][0] = random(0, 4);
-
-      // Nao se pode adicionar um novo carrinho
-      if(grid[0][0][0]==1)  grid[0][0][0] = 0;
-      if(grid[0][1][0]==1)  grid[0][1][0] = 0;
-      if(grid[1][0][0]==1)  grid[1][0][0] = 0;
-      if(grid[1][1][0]==1)  grid[1][1][0] = 0;
-      
-      // Nem ter dois obstaculos do mesmo tipo na mesma linha
-      if(grid[0][0][0]==2 && grid[0][1][0]==2) grid[0][random(0, 1)][0] = 3;
-      if(grid[0][0][0]==3 && grid[0][1][0]==3) grid[0][random(0, 1)][0] = 2;
-
-      if(grid[1][0][0]==2 && grid[1][1][0]==2) grid[1][random(0, 1)][0] = 3;
-      if(grid[1][0][0]==3 && grid[1][1][0]==3) grid[1][random(0, 1)][0] = 2;
+      atualizaVidas();      
     }
     
     atualizaLCD();
@@ -322,7 +324,7 @@ void loop() {
     desenhaMenu();
   }
   lerTeclas();
-	carrinhos(0);
+	
   //Ajeita o treco do menu
     if(e){
       carrinhos(0);
