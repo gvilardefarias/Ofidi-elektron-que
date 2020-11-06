@@ -110,8 +110,8 @@ void perderIndividual(){
 
   LCD0.setCursor(6, 0);
   LCD0.print("Fim");
-  LCD0.setCursor(2, 1);
-  LCD0.print("Do Jogo");
+  LCD0.setCursor(3, 1);
+  LCD0.print("Do Jogo       ");
 
   LCD1.setCursor(2, 0);
   LCD1.print("Pontuacao:");
