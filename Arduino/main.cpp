@@ -93,22 +93,75 @@ void atualizaLCD(){
     for(int i=0;i<2;i++){
       for(int j=0;j<16;j++){
         LCD1.setCursor(j,i);    
-        LCD1.write((byte) grid[1][i][j]);
+        LCD1.write((byte) grid[1][i][15-j]);
         
         LCD0.setCursor(j,i);
-        LCD0.write((byte) grid[0][i][j]);
+        LCD0.write((byte) grid[0][i][15-j]);
       }
     }
 }
 
+// Mensagem para quando ganhar no modo de individual
 void perderIndividual(){
-  // Mensagem para quando perder no individual 
+	  LCD0.clear();
+	  LCD1.clear();
+	
+    LCD0.setCursor(6,0);
+		LCD0.print("Fim");
+		LCD0.setCursor(2,1);
+		LCD0.print("Do Jogo");
+	
+	  delay(5000);
 }
 
+// Mensagem para quando ganhar no modo de dupla
 void ganhadorDupla(){
-  // Mensagem para quando ganhar no modo de dupla
-  
-  // para saber o ganhador ver variavel vida que tiver >0 ou pode dar empate
+	LCD0.clear();
+	LCD1.clear();
+	
+  if(vidas[0] && vidas[1]<=0){
+     LCD0.setCursor(5,0);
+		 LCD0.print("Voce");
+		 LCD0.setCursor(4,1);
+		 LCD0.print("Ganhou");
+		
+		 LCD1.setCursor(5,0);
+		 LCD1.print("Voce");
+		 LCD1.setCursor(4,1);
+		 LCD1.print("Perdeu");
+	} else if(vidas[1] && vidas[0]<=0){
+		 LCD0.setCursor(5,0);
+		 LCD0.print("Voce");
+		 LCD0.setCursor(4,1);
+		 LCD0.print("Perdeu");
+		
+     LCD1.setCursor(5,0);
+		 LCD1.print("Voce");
+		 LCD1.setCursor(4,1);
+		 LCD1.print("Ganhou");
+	} else{
+		 LCD0.setCursor(4,0);
+		 LCD0.print("Empate");
+		
+		 LCD1.setCursor(4,0);
+		 LCD1.print("Empate");
+	}
+	
+	delay(5000);
+}
+
+void desenhaMenu(){
+	  LCD0.clear();
+	  LCD0.setCursor(5,0);
+		LCD0.print("Modo");
+		LCD0.setCursor(2,1);
+		LCD0.print("Individual    ");
+	
+	  LCD1.clear();
+    LCD1.setCursor(5,0);
+		LCD1.print("Modo");
+		LCD1.setCursor(4,1);
+		LCD1.print("Dupla");
 }
 
 void atualizaVidas(){
@@ -166,7 +219,7 @@ void preencheGrid(int gridAux[2][16], int gridNum){
       grid[gridNum][i][j] = gridAux[i][j];
 }
 
-void desenhaMenu(){
+void limpaMenu(){
   int gridAux[2][16] = {
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}
@@ -231,7 +284,7 @@ void carrinhos(int dupla){
 	// Deslocamento para esquerda e adicao de novos obstaculos
 	for(int i=0;i<2;i++)
           for(int j=14;j>0;j--)
-            grid[0][i][j] = grid[k][i][j-1];
+            grid[0][i][j] = grid[0][i][j-1];
 	      
 	grid[0][0][0] = random(0, 4);
       	grid[0][1][0] = random(0, 4);
@@ -256,6 +309,10 @@ void carrinhos(int dupla){
           if(grid[1][1][14]==2) vidas[1]  -= 1;
         }
 	  	
+	 
+	for(int i=0;i<2;i++)
+          for(int j=14;j>0;j--)
+            grid[1][i][j] = grid[1][i][j-1];
 	      
 	grid[1][0][0] = random(0, 4);
       	grid[1][1][0] = random(0, 4);  
@@ -327,12 +384,14 @@ void loop() {
 	
   //Ajeita o treco do menu
     if(e){
+      limpaMenu();
       carrinhos(0);
       
       limparValores = 1;
       perderIndividual();
     }
     if(d){
+      limpaMenu();
       carrinhos(1);
       
       limparValores = 1;
