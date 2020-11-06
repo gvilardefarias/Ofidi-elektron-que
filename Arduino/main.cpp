@@ -226,6 +226,9 @@ void limpaMenu(){
   };
   preencheGrid(gridAux, 0);
   preencheGrid(gridAux, 1);
+	
+  vidas[0] = 3;
+  vidas[1] = 3;
 
   atualizaLCD();
   atualizaVidas();
