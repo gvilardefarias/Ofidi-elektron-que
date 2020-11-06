@@ -48,10 +48,10 @@ byte customChar0[8] = {
 byte customChar1[8] = {
 	0b11111,
 	0b00000,
-	0b01010,
+	0b10100,
 	0b11111,
 	0b11111,
-	0b01010,
+	0b10100,
 	0b00000,
 	0b11111
 };  // Carrinho
