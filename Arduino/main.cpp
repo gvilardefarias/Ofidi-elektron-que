@@ -35,51 +35,53 @@ int grid[2][2][16];
 
 //Definicao dos caracteres utilizados no LCD
 byte customChar0[8] = {
-	0b11111,
-	0b00000,
-	0b00000,
-	0b00000,
-	0b00000,
-	0b00000,
-	0b00000,
-	0b11111
+  0b11111,
+  0b00000,
+  0b00000,
+  0b00000,
+  0b00000,
+  0b00000,
+  0b00000,
+  0b11111
 };  // espaco vazio
 
 byte customChar1[8] = {
-	0b11111,
-	0b00000,
-	0b10100,
-	0b11111,
-	0b11111,
-	0b10100,
-	0b00000,
-	0b11111
+  0b11111,
+  0b00000,
+  0b10100,
+  0b11111,
+  0b11111,
+  0b10100,
+  0b00000,
+  0b11111
 };  // Carrinho
 
 byte customChar2[8] = {
-	0b11111,
-	0b00000,
-	0b01110,
-	0b00100,
-	0b00100,
-	0b01110,
-	0b00000,
-	0b11111
+  0b11111,
+  0b00000,
+  0b01110,
+  0b00100,
+  0b00100,
+  0b01110,
+  0b00000,
+  0b11111
 };  // Barreira
 
 byte customChar3[8] = {
-	0b11111,
-	0b00000,
-	0b11111,
-	0b10001,
-	0b10001,
-	0b11111,
-	0b00000,
-	0b11111
+  0b11111,
+  0b00000,
+  0b11111,
+  0b10001,
+  0b10001,
+  0b11111,
+  0b00000,
+  0b11111
 };  // Circulo
 
 // As vidas para cada LCD
 int vidas[2];
+
+int pontuacao;
 
 // Teclas
 bool start, ativa, limparValores;
@@ -90,78 +92,83 @@ unsigned long tempo;
 
 
 void atualizaLCD(){
-    for(int i=0;i<2;i++){
-      for(int j=0;j<16;j++){
-        LCD1.setCursor(j,i);    
-        LCD1.write((byte) grid[1][i][15-j]);
-        
-        LCD0.setCursor(j,i);
-        LCD0.write((byte) grid[0][i][15-j]);
-      }
+  for(int i=0;i<2;i++){
+    for(int j=0;j<16;j++){
+      LCD1.setCursor(j,i);    
+      LCD1.write((byte) grid[1][i][15-j]);
+
+      LCD0.setCursor(j,i);
+      LCD0.write((byte) grid[0][i][15-j]);
     }
+  }
 }
 
 // Mensagem para quando ganhar no modo de individual
 void perderIndividual(){
-	  LCD0.clear();
-	  LCD1.clear();
-	
-    LCD0.setCursor(6,0);
-		LCD0.print("Fim");
-		LCD0.setCursor(2,1);
-		LCD0.print("Do Jogo");
-	
-	  delay(5000);
+  LCD0.clear();
+  LCD1.clear();
+
+  LCD0.setCursor(6, 0);
+  LCD0.print("Fim");
+  LCD0.setCursor(2, 1);
+  LCD0.print("Do Jogo");
+
+  LCD1.setCursor(2, 0);
+  LCD1.print("Pontuacao:");
+  LCD1.setCursor(0, 1);
+  LCD1.print(pontuacao);
+
+  delay(5000);
 }
 
 // Mensagem para quando ganhar no modo de dupla
 void ganhadorDupla(){
-	LCD0.clear();
-	LCD1.clear();
-	
+  LCD0.clear();
+  LCD1.clear();
+
   if(vidas[0] && vidas[1]<=0){
-     LCD0.setCursor(5,0);
-		 LCD0.print("Voce");
-		 LCD0.setCursor(4,1);
-		 LCD0.print("Ganhou");
-		
-		 LCD1.setCursor(5,0);
-		 LCD1.print("Voce");
-		 LCD1.setCursor(4,1);
-		 LCD1.print("Perdeu");
-	} else if(vidas[1] && vidas[0]<=0){
-		 LCD0.setCursor(5,0);
-		 LCD0.print("Voce");
-		 LCD0.setCursor(4,1);
-		 LCD0.print("Perdeu");
-		
-     LCD1.setCursor(5,0);
-		 LCD1.print("Voce");
-		 LCD1.setCursor(4,1);
-		 LCD1.print("Ganhou");
-	} else{
-		 LCD0.setCursor(4,0);
-		 LCD0.print("Empate");
-		
-		 LCD1.setCursor(4,0);
-		 LCD1.print("Empate");
-	}
-	
-	delay(5000);
+    LCD0.setCursor(5,0);
+    LCD0.print("Voce");
+    LCD0.setCursor(4,1);
+    LCD0.print("Ganhou");
+
+    LCD1.setCursor(5,0);
+    LCD1.print("Voce");
+    LCD1.setCursor(4,1);
+    LCD1.print("Perdeu");
+  } else if(vidas[1] && vidas[0]<=0){
+    LCD0.setCursor(5,0);
+    LCD0.print("Voce");
+    LCD0.setCursor(4,1);
+    LCD0.print("Perdeu");
+
+    LCD1.setCursor(5,0);
+    LCD1.print("Voce");
+    LCD1.setCursor(4,1);
+    LCD1.print("Ganhou");
+  } else{
+    LCD0.setCursor(4,0);
+    LCD0.print("Empate");
+
+    LCD1.setCursor(4,0);
+    LCD1.print("Empate");
+  }
+
+  delay(5000);
 }
 
 void desenhaMenu(){
-	  LCD0.clear();
-	  LCD0.setCursor(5,0);
-		LCD0.print("Modo");
-		LCD0.setCursor(2,1);
-		LCD0.print("Individual    ");
-	
-	  LCD1.clear();
-    LCD1.setCursor(5,0);
-		LCD1.print("Modo");
-		LCD1.setCursor(4,1);
-		LCD1.print("Dupla");
+  LCD0.clear();
+  LCD0.setCursor(5,0);
+  LCD0.print("Modo");
+  LCD0.setCursor(2,1);
+  LCD0.print("Individual    ");
+
+  LCD1.clear();
+  LCD1.setCursor(5,0);
+  LCD1.print("Modo");
+  LCD1.setCursor(4,1);
+  LCD1.print("Dupla");
 }
 
 void atualizaVidas(){
@@ -185,7 +192,7 @@ void atualizaVidas(){
     digitalWrite(VIDA02, LOW);
     digitalWrite(VIDA03, LOW);
   }
-  
+
   if(vidas[1] == 3){
     digitalWrite(VIDA11, HIGH);
     digitalWrite(VIDA12, HIGH);
@@ -226,7 +233,7 @@ void limpaMenu(){
   };
   preencheGrid(gridAux, 0);
   preencheGrid(gridAux, 1);
-	
+
   vidas[0] = 3;
   vidas[1] = 3;
 
@@ -238,14 +245,14 @@ void carrinhos(int dupla){
   start = 0;
   e     = 0;
   d     = 0;
-  
-  
+
+
   while(1){
     lerTeclas();
-    //Serial.println(start);
+
     if(start) return;    
-    
-    
+
+
     if(e && vidas[0]>0){
       if(grid[0][0][15]){ // se o carrinho se encontra na primeira linha passa para a segunda
         grid[0][0][15] = 0;
@@ -256,7 +263,7 @@ void carrinhos(int dupla){
         grid[0][1][15] = 0;
       }
     }
-    
+
     if(d && vidas[1]>0){
       if(grid[1][0][15]){ // se o carrinho se encontra na primeira linha passa para a segunda
         grid[1][0][15] = 0;
@@ -267,11 +274,11 @@ void carrinhos(int dupla){
         grid[1][1][15] = 0;
       }
     }
-    
-    
+
+
     if((millis()-tempo)>1000){
       tempo = millis();
-      
+
       // LCD da esquerda
       if(vidas[0]>0){
         if(grid[0][0][15]){
@@ -282,23 +289,32 @@ void carrinhos(int dupla){
           if(grid[0][0][14]==3) vidas[0]  -= 1;
           if(grid[0][1][14]==2) vidas[0]  -= 1;
         }
-	      
-	      
-	// Deslocamento para esquerda e adicao de novos obstaculos
-	for(int i=0;i<2;i++)
+
+
+        // Deslocamento para esquerda e adicao de novos obstaculos
+        for(int i=0;i<2;i++)
           for(int j=14;j>0;j--)
             grid[0][i][j] = grid[0][i][j-1];
-	      
-	grid[0][0][0] = random(0, 4);
-      	grid[0][1][0] = random(0, 4);
-	      
+
+        grid[0][0][0] = random(0, 4);
+        grid[0][1][0] = random(0, 4);
+
         // Nao se pode adicionar um novo carrinho
-	if(grid[0][0][0]==1)  grid[0][0][0] = 0;
-      	if(grid[0][1][0]==1)  grid[0][1][0] = 0;
-	      
-	// Nem ter dois obstaculos do mesmo tipo na mesma linha
-      	if(grid[0][0][0]==2 && grid[0][1][0]==2) grid[0][random(0, 1)][0] = 3;
-      	if(grid[0][0][0]==3 && grid[0][1][0]==3) grid[0][random(0, 1)][0] = 2;
+        if(grid[0][0][0]==1)  grid[0][0][0] = 0;
+        if(grid[0][1][0]==1)  grid[0][1][0] = 0;
+
+        // Nem ter dois obstaculos do mesmo tipo na mesma linha
+        if(grid[0][0][0]==2 && grid[0][1][0]==2) grid[0][random(0, 1)][0] = 3;
+        if(grid[0][0][0]==3 && grid[0][1][0]==3) grid[0][random(0, 1)][0] = 2;
+
+        if(!dupla){
+          if(grid[0][0][15]){
+            if(grid[0][0][14]==3) pontuacao += 1;
+          }
+          else{
+            if(grid[0][1][14]==3) pontuacao += 1;
+          }
+        }
       }
 
       // LCD da direita
@@ -311,27 +327,36 @@ void carrinhos(int dupla){
           if(grid[1][0][14]==3) vidas[1]  -= 1;
           if(grid[1][1][14]==2) vidas[1]  -= 1;
         }
-	  	
-	 
-	for(int i=0;i<2;i++)
+
+
+        for(int i=0;i<2;i++)
           for(int j=14;j>0;j--)
             grid[1][i][j] = grid[1][i][j-1];
-	      
-	grid[1][0][0] = random(0, 4);
-      	grid[1][1][0] = random(0, 4);  
-      
-      	if(grid[1][0][0]==1)  grid[1][0][0] = 0;
-      	if(grid[1][1][0]==1)  grid[1][1][0] = 0;  
 
-      	if(grid[1][0][0]==2 && grid[1][1][0]==2) grid[1][random(0, 1)][0] = 3;
-      	if(grid[1][0][0]==3 && grid[1][1][0]==3) grid[1][random(0, 1)][0] = 2;
+        grid[1][0][0] = random(0, 4);
+        grid[1][1][0] = random(0, 4);  
+
+        if(grid[1][0][0]==1)  grid[1][0][0] = 0;
+        if(grid[1][1][0]==1)  grid[1][1][0] = 0;  
+
+        if(grid[1][0][0]==2 && grid[1][1][0]==2) grid[1][random(0, 1)][0] = 3;
+        if(grid[1][0][0]==3 && grid[1][1][0]==3) grid[1][random(0, 1)][0] = 2;
+
+        if(!dupla){
+          if(grid[1][0][15]){
+            if(grid[1][0][14]==3) pontuacao += 1;
+          }
+          else{
+            if(grid[1][1][14]==3) pontuacao += 1;
+          }
+        }
       }
-      
+
       atualizaVidas();      
     }
-    
+
     atualizaLCD();
-    
+
     if(!dupla){
       if(vidas[1]<=0 && vidas[0]<=0)
         break;
@@ -344,60 +369,60 @@ void carrinhos(int dupla){
 
 
 void setup() {
-  //Serial.begin(9600);
-  
   pinMode(VIDA01, OUTPUT);
   pinMode(VIDA02, OUTPUT);
   pinMode(VIDA03, OUTPUT);
   pinMode(VIDA11, OUTPUT);
   pinMode(VIDA12, OUTPUT);
   pinMode(VIDA13, OUTPUT);
-  
+
   pinMode(E, INPUT_PULLUP);
   pinMode(D, INPUT_PULLUP);
-  
+
   LCD0.begin(16, 2);
   LCD1.begin(16, 2);
-	
+
   LCD0.createChar(0, customChar0);
   LCD0.createChar(1, customChar1);
   LCD0.createChar(2, customChar2);
   LCD0.createChar(3, customChar3);
-	
+
   LCD1.createChar(0, customChar0);
   LCD1.createChar(1, customChar1);
   LCD1.createChar(2, customChar2);
   LCD1.createChar(3, customChar3);
-  
+
   randomSeed(analogRead(5));
-  
-  vidas[0] = 3;
-  vidas[1] = 3;
-  
+
+  vidas[0]      = 3;
+  vidas[1]      = 3;
+
+  pontuacao     = 0;
+
   limparValores = 1;
 }
 
 void loop() {
   if(limparValores){
     limparValores = 0;
-    
+
     desenhaMenu();
   }
   lerTeclas();
-	
+
   //Ajeita o treco do menu
-    if(e){
-      limpaMenu();
-      carrinhos(0);
-      
-      limparValores = 1;
-      perderIndividual();
-    }
-    if(d){
-      limpaMenu();
-      carrinhos(1);
-      
-      limparValores = 1;
-      ganhadorDupla();
-    }
+  if(e){
+    limpaMenu();
+    carrinhos(0);
+
+    limparValores = 1;
+    perderIndividual();
+  }
+  if(d){
+    limpaMenu();
+    carrinhos(1);
+
+    limparValores = 1;
+    ganhadorDupla();
+  }
 }
