@@ -11,7 +11,7 @@
 #define E 5
 #define D 4
 
-#define EN 13
+#define EN 13 
 #define RS_0 12
 #define RS_1 A0
 
@@ -130,7 +130,7 @@ void ganhadorDupla(){
     LCD0.setCursor(5,0);
     LCD0.print("Voce");
     LCD0.setCursor(4,1);
-    LCD0.print("Ganhou");
+    LCD0.print("Ganhou            ");
 
     LCD1.setCursor(5,0);
     LCD1.print("Voce");
@@ -145,7 +145,7 @@ void ganhadorDupla(){
     LCD1.setCursor(5,0);
     LCD1.print("Voce");
     LCD1.setCursor(4,1);
-    LCD1.print("Ganhou");
+    LCD1.print("Ganhou            ");
   } else{
     LCD0.setCursor(4,0);
     LCD0.print("Empate");
@@ -234,8 +234,10 @@ void limpaMenu(){
   preencheGrid(gridAux, 0);
   preencheGrid(gridAux, 1);
 
-  vidas[0] = 3;
-  vidas[1] = 3;
+  vidas[0]  = 3;
+  vidas[1]  = 3;
+  
+  pontuacao = 0;
 
   atualizaLCD();
   atualizaVidas();
@@ -276,7 +278,7 @@ void carrinhos(int dupla){
     }
 
 
-    if((millis()-tempo)>1000){
+    if((millis()-tempo)>1500){
       tempo = millis();
 
       // LCD da esquerda
@@ -393,11 +395,7 @@ void setup() {
   LCD1.createChar(3, customChar3);
 
   randomSeed(analogRead(5));
-
-  vidas[0]      = 3;
-  vidas[1]      = 3;
-
-  pontuacao     = 0;
+  
 
   limparValores = 1;
 }
@@ -405,12 +403,13 @@ void setup() {
 void loop() {
   if(limparValores){
     limparValores = 0;
-
+    
     desenhaMenu();
+    delay(500);
   }
   lerTeclas();
 
-  //Ajeita o treco do menu
+ 
   if(e){
     limpaMenu();
     carrinhos(0);
